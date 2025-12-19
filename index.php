@@ -56,6 +56,45 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             height: 45px; /* Sesuaikan ukuran logo */
         }
 
+        /* TENGAH HEADER (TANGGAL & JAM) */
+        .header-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header-center .date {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 2px;
+            font-weight: 500;
+        }
+
+        .header-center .time {
+            font-size: 18px;
+            font-weight: 700;
+            color: #004699;
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+
+        /* Sembunyikan jam di layar HP kecil biar rapi */
+        @media (max-width: 768px) {
+            .header-center {
+                display: none;
+            }
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center; 
+            gap: 20px;
+        }
+
         .user-info {
             text-align: right;
         }
@@ -204,7 +243,12 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             <img src="https://intra.kemendag.go.id/res/assets/img/logo/logo-kemendag-linktree.svg" alt="Logo Kemendag" class="logo-img">
         </div>
         
-        <div class="header-right" style="display:flex; align-items:center; gap:20px;">
+        <div class="header-center">
+            <span class="date" id="current-date">Memuat tanggal...</span>
+            <span class="time" id="current-time">00:00:00 WIB</span>
+        </div>
+        
+        <div class="header-right">
             <div class="user-info">
                 <span style="display:block; font-size:12px; color:#888;">Halo, Admin</span>
                 <span class="user-name"><?= htmlspecialchars($_SESSION['username']); ?></span>
@@ -249,7 +293,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 <div class="icon-arrow">&rarr;</div>
             </a>
 
-            <a href="#" class="menu-card">
+            <a href="form_edukasi.php" class="menu-card">
                 <div class="card-number">4</div>
                 <div class="card-content">
                     <h3>Pelaporan Hasil Kegiatan Edukasi</h3>
@@ -273,6 +317,26 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     <footer>
         © 2025 Pusat Data dan Sistem Informasi Kementerian Perdagangan RI
     </footer>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            
+            // Format Tanggal: "Senin, 20 Februari 2025"
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString('id-ID', dateOptions);
+            
+            // Format Jam: "14:30:45"
+            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':');
+
+            document.getElementById('current-date').textContent = dateString;
+            document.getElementById('current-time').textContent = timeString + " WIB";
+        }
+
+        // Jalankan fungsi setiap 1 detik
+        setInterval(updateClock, 1000);
+        updateClock(); // Jalankan langsung saat load
+    </script>
 
 </body>
 </html>
