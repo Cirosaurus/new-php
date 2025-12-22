@@ -266,7 +266,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
         <div class="menu-grid">
 
-            <a href="form_pengawasan.php class="menu-card">
+            <a href="form_pengawasan.php" class="menu-card">
                 <div class="card-number">1</div>
                 <div class="card-content">
                     <h3>Pelaporan Hasil Kegiatan Pengawasan UTTP</h3>
