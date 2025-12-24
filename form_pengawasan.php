@@ -4,6 +4,13 @@ session_start();
 if (!isset($_SESSION['username'])) {
     $_SESSION['username'] = "User"; // Default jika tidak ada session
 }
+
+// --- LOGIKA PESAN SUKSES (SAMA SEPERTI FORM EDUKASI) ---
+$pesan_sukses = "";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Di sini logika penyimpanan ke database biasanya dilakukan
+    $pesan_sukses = "Laporan berhasil dikirim! Terima kasih.";
+}
 ?>
 
 <!DOCTYPE html>
@@ -314,6 +321,17 @@ if (!isset($_SESSION['username'])) {
             from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* --- STYLE NOTIFIKASI SUKSES --- */
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -340,6 +358,10 @@ if (!isset($_SESSION['username'])) {
                 <h2>Pelaporan Hasil Kegiatan Pengawasan UTTP</h2>
                 <p>Silakan isi formulir di bawah ini dengan data yang benar dan valid.</p>
             </div>
+
+            <?php if($pesan_sukses): ?>
+                <div class="alert-success"><?= $pesan_sukses ?></div>
+            <?php endif; ?>
 
             <form action="" method="POST">
 
