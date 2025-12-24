@@ -318,7 +318,6 @@ if (!isset($_SESSION['username'])) {
 </head>
 
 <body>
-
     <header class="header">
         <div class="header-left">
             <img src="https://intra.kemendag.go.id/res/assets/img/logo/logo-kemendag-linktree.svg" alt="Logo Kemendag" class="logo-img">
@@ -362,7 +361,7 @@ if (!isset($_SESSION['username'])) {
                                     <label>Nomor/Identitas SPBU (Pilih dari daftar atau ketik)</label>
 
                                     <input type="text" name="nomor_spbu" id="cari_nomor" class="form-control"
-                                        list="list-spbu" placeholder="Ketik atau pilih nomor SPBU..." autocomplete="off" required>
+                                        list="list-spbu" placeholder="Ketik atau pilih nomor SPBU..." autocomplete="on" required>
 
                                     <datalist id="list-spbu">
                                     </datalist>
