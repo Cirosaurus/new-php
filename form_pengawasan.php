@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-family: 'Poppins', sans-serif;
             font-size: 14px;
         }
-        
+
         select.form-control {
             background-color: white;
             cursor: pointer;
@@ -154,9 +154,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 8px;
             overflow: hidden;
             width: 100%;
-            max-width: 200px; /* Batasi lebar agar rapi */
+            max-width: 200px;
+            /* Batasi lebar agar rapi */
         }
-        
+
         .counter-btn {
             background-color: #f8f9fa;
             border: none;
@@ -172,13 +173,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             justify-content: center;
             border-right: 1px solid #ddd;
         }
+
         .counter-btn:last-child {
             border-right: none;
             border-left: 1px solid #ddd;
         }
+
         .counter-btn:hover {
             background-color: #e2e6ea;
         }
+
         .counter-btn:active {
             background-color: #dbe2e8;
         }
@@ -191,8 +195,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: 600;
             color: #333;
             outline: none;
-            appearance: textfield; /* Hapus spinner firefox */
+            appearance: textfield;
+            /* Hapus spinner firefox */
         }
+
         /* Hapus spinner chrome/safari */
         .counter-input::-webkit-outer-spin-button,
         .counter-input::-webkit-inner-spin-button {
@@ -215,8 +221,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* --- STYLE ACCORDION --- */
@@ -299,14 +310,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .btn-submit:hover {
             background-color: #003377;
         }
-        
+
         /* Utility untuk Divider form dinamis */
         .form-divider {
-            margin: 25px 0 15px; 
+            margin: 25px 0 15px;
             padding-bottom: 5px;
-            border-bottom: 1px solid #eee; 
-            color: #004699; 
-            font-size: 14px; 
+            border-bottom: 1px solid #eee;
+            color: #004699;
+            font-size: 14px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -317,9 +328,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: none;
             animation: fadeIn 0.3s ease-in-out;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* --- STYLE NOTIFIKASI SUKSES --- */
@@ -359,14 +378,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>Silakan isi formulir di bawah ini dengan data yang benar dan valid.</p>
             </div>
 
-            <?php if($pesan_sukses): ?>
+            <?php if ($pesan_sukses): ?>
                 <div class="alert-success"><?= $pesan_sukses ?></div>
             <?php endif; ?>
 
             <form action="" method="POST">
 
                 <div class="accordion">
-                    
+
                     <div class="accordion-item">
                         <button type="button" class="accordion-header active">
                             I. Data Pengawasan <span class="icon">&#9660;</span>
@@ -403,7 +422,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 <div class="form-group">
                                     <label>Jumlah PU BBM Yang Diawasi</label>
-                                    
+
                                     <div class="counter-wrapper">
                                         <button type="button" class="counter-btn" id="btn-minus">&minus;</button>
                                         <input type="number" name="jumlah_nozzle" id="jumlah_input" class="counter-input" value="0" min="0">
@@ -418,8 +437,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div id="dynamic-container"></div>
 
-                </div> 
-                
+                </div>
+
                 <button type="submit" class="btn-submit">Simpan Laporan</button>
             </form>
         </div>
@@ -494,45 +513,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const btnMinus = document.getElementById('btn-minus');
 
         function triggerInputEvent() {
-            const event = new Event('input', { bubbles: true });
+            const event = new Event('input', {
+                bubbles: true
+            });
             inputJumlah.dispatchEvent(event);
         }
 
         btnPlus.addEventListener('click', function() {
             let val = parseInt(inputJumlah.value) || 0;
             inputJumlah.value = val + 1;
-            triggerInputEvent(); 
+            triggerInputEvent();
         });
 
         btnMinus.addEventListener('click', function() {
             let val = parseInt(inputJumlah.value) || 0;
             if (val > 0) {
                 inputJumlah.value = val - 1;
-                triggerInputEvent(); 
+                triggerInputEvent();
             }
         });
 
         // --- FUNGSI TOGGLE FORM (LOGIKA PILIHAN) ---
-        // Fungsi ini dipanggil saat Radio Button "Jenis Kegiatan" diklik
         function toggleSection(index, value) {
             const sectionTera = document.getElementById(`section-tera-${index}`);
             const sectionUji = document.getElementById(`section-uji-${index}`);
-            
-            // Sembunyikan semua dulu
+
+            // Sembunyikan semua dulu sebagai default
             sectionTera.style.display = 'none';
             sectionUji.style.display = 'none';
 
-            // Tampilkan sesuai pilihan
+            // Logika tampilan berdasarkan pilihan
             if (value === 'tera') {
                 sectionTera.style.display = 'block';
             } else if (value === 'uji') {
                 sectionUji.style.display = 'block';
+            } else if (value === 'gabungan') {
+                // Tampilkan KEDUANYA
+                sectionTera.style.display = 'block';
+                sectionUji.style.display = 'block';
             }
-            
-            // Update tinggi accordion (agar konten tidak terpotong)
+
+            // Update tinggi accordion (agar konten tidak terpotong saat form muncul)
             const item = document.getElementById(`item-${index}`);
-            const panel = item.querySelector('.accordion-body');
-            panel.style.maxHeight = panel.scrollHeight + 500 + "px"; // Tambah buffer tinggi
+            // Cek element accordion-body untuk menyesuaikan scrollHeight
+            if (item) {
+                const panel = item.querySelector('.accordion-body');
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = panel.scrollHeight + 1000 + "px"; // Tambah buffer tinggi
+                }
+            }
         }
 
 
@@ -546,7 +575,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Jika User Menambah
             if (targetCount > existingItems) {
                 for (let i = existingItems + 1; i <= targetCount; i++) {
-                    
+
                     const htmlTemplate = `
                     <div class="accordion-item" id="item-${i}">
                         <button type="button" class="accordion-header">
@@ -567,25 +596,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <input type="text" name="detail[${i}][tipe]" class="form-control">
                                 </div>
                                 
-                                <div class="form-group" style="background:#eef4fa; padding:15px; border-radius:8px;">
-                                    <label style="color:#004699; margin-bottom:10px; display:block; font-weight:600;">Jenis Kegiatan</label>
-                                    
-                                    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                                        <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
-                                            <input type="radio" name="detail[${i}][jenis_kegiatan]" value="tera" 
-                                                   onchange="toggleSection(${i}, 'tera')" 
-                                                   style="transform: scale(1.2); margin-right: 8px; accent-color: #004699;"> 
-                                            Pemeriksaan Tanda Tera
-                                        </label>
 
-                                        <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
-                                            <input type="radio" name="detail[${i}][jenis_kegiatan]" value="uji" 
-                                                   onchange="toggleSection(${i}, 'uji')" 
-                                                   style="transform: scale(1.2); margin-right: 8px; accent-color: #004699;"> 
-                                            Pengujian Kebenaran
-                                        </label>
-                                    </div>
-                                </div>
+<div class="form-group" style="background:#eef4fa; padding:15px; border-radius:8px;">
+    <label style="color:#004699; margin-bottom:10px; display:block; font-weight:600;">Jenis Kegiatan</label>
+    
+    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+        <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
+            <input type="radio" name="detail[${i}][jenis_kegiatan]" value="tera" 
+                   onchange="toggleSection(${i}, 'tera')" 
+                   style="transform: scale(1.2); margin-right: 8px; accent-color: #004699;"> 
+            Pemeriksaan Tanda Tera
+        </label>
+
+        <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
+            <input type="radio" name="detail[${i}][jenis_kegiatan]" value="uji" 
+                   onchange="toggleSection(${i}, 'uji')" 
+                   style="transform: scale(1.2); margin-right: 8px; accent-color: #004699;"> 
+            Pengujian Kebenaran
+        </label>
+
+        <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
+            <input type="radio" name="detail[${i}][jenis_kegiatan]" value="gabungan" 
+                   onchange="toggleSection(${i}, 'gabungan')" 
+                   style="transform: scale(1.2); margin-right: 8px; accent-color: #004699;"> 
+            Pemeriksaan & Pengujian
+        </label>
+    </div>
+</div>
+
 
                                 <div id="section-tera-${i}" class="hidden-section">
                                     <div class="form-divider">Hasil Pemeriksaan Tanda Tera</div>
@@ -636,7 +674,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 initAccordion();
             }
-            
+
             // Jika User Mengurangi
             else if (targetCount < existingItems) {
                 while (container.children.length > targetCount) {
@@ -665,8 +703,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Jalankan sekali saat halaman pertama dimuat
         initAccordion();
-
     </script>
 
 </body>
+
 </html>
