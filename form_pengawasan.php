@@ -5,7 +5,7 @@ if (!isset($_SESSION['username'])) {
     $_SESSION['username'] = "User"; // Default jika tidak ada session
 }
 
-// --- LOGIKA PESAN SUKSES (SAMA SEPERTI FORM EDUKASI) ---
+// --- LOGIKA PESAN SUKSES ---
 $pesan_sukses = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Di sini logika penyimpanan ke database biasanya dilakukan
@@ -25,332 +25,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <style>
         /* CSS Dasar */
-        * {
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f4f6f9; color: #333; min-height: 100vh; }
 
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-            min-height: 100vh;
+        /* HEADER */
+        .header { 
+            background-color: #ffffff; 
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); 
+            padding: 15px 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
         }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .logo-img { height: 45px; }
 
-        /* --- CSS HEADER --- */
-        .header {
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 15px 40px;
+        /* TENGAH HEADER (TANGGAL & JAM) - BARU */
+        .header-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            flex-direction: column;
+            justify-content: center;
         }
+        .header-center .date { font-size: 12px; color: #888; margin-bottom: 2px; font-weight: 500; }
+        .header-center .time { font-size: 18px; font-weight: 700; color: #004699; letter-spacing: 1px; line-height: 1.2; }
+        @media (max-width: 768px) { .header-center { display: none; } }
 
-        .logo-img {
-            height: 45px;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: #004699;
-            font-size: 14px;
-        }
-
-        .logout-btn {
-            background-color: #ffebe9;
-            color: #cf222e;
-            padding: 8px 16px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            border: 1px solid #ffc1bc;
-        }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .user-info { text-align: right; }
+        .user-name { font-weight: 600; color: #004699; font-size: 14px; }
+        .logout-btn { background-color: #ffebe9; color: #cf222e; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; border: 1px solid #ffc1bc; }
 
         /* Container */
-        .container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-            padding-bottom: 80px;
-        }
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; padding-bottom: 80px; }
+        .content-box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #004699; text-decoration: none; font-weight: 600; font-size: 14px; }
+        
+        /* Form Elements */
+        .form-title { text-align: center; margin-bottom: 30px; }
+        .form-title h2 { color: #004699; font-size: 20px; margin-bottom: 5px; text-transform: uppercase; }
+        .form-title p { color: #666; font-size: 13px; max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 20px; position: relative; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+        .required { color: #d93025; margin-left: 2px; }
+        
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Poppins', sans-serif; font-size: 14px; }
+        select.form-control { background-color: white; cursor: pointer; }
 
-        /* Container Content Box */
-        .content-box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
+        /* Counter Wrapper */
+        .counter-wrapper { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; width: 100%; max-width: 200px; }
+        .counter-btn { background-color: #f8f9fa; border: none; width: 50px; height: 45px; font-size: 18px; font-weight: bold; color: #004699; cursor: pointer; border-right: 1px solid #ddd; }
+        .counter-btn:last-child { border-right: none; border-left: 1px solid #ddd; }
+        .counter-input { width: 100%; border: none; text-align: center; font-size: 16px; font-weight: 600; color: #333; outline: none; -moz-appearance: textfield; }
+        .counter-input::-webkit-outer-spin-button, .counter-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-        /* Style Link Kembali */
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #004699;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-        }
+        /* Spinner & Alerts */
+        .spinner { position: absolute; right: 15px; top: 38px; display: none; width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #004699; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .alert-success { background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #c3e6cb; text-align: center; }
 
-        /* Form Title Style */
-        .form-title {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        /* Accordion */
+        .accordion { background-color: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02); overflow: hidden; border: 1px solid #e1e4e8; }
+        .accordion-item { border-bottom: 1px solid #e1e4e8; }
+        .accordion-item:last-child { border-bottom: none; }
+        .accordion-header { width: 100%; background-color: #fff; padding: 20px 25px; text-align: left; border: none; outline: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: #333; }
+        .accordion-header.active { background-color: #004699; color: white; }
+        .accordion-body { padding: 0 25px; background-color: white; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .form-content { padding: 25px 0; }
+        .icon { font-size: 12px; transition: transform 0.3s ease; }
+        .active .icon { transform: rotate(180deg); }
 
-        .form-title h2 {
-            color: #004699;
-            font-size: 20px;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            line-height: 1.4;
-        }
+        .btn-submit { width: 100%; padding: 15px; background: #004699; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 30px; }
+        .btn-submit:hover { background-color: #003377; }
+        .form-divider { margin: 25px 0 15px; padding-bottom: 5px; border-bottom: 1px solid #eee; color: #004699; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .hidden-section { display: none; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .form-title p {
-            color: #666;
-            font-size: 13px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Form Group & Inputs */
-        .form-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-        }
-
-        select.form-control {
-            background-color: white;
-            cursor: pointer;
-        }
-
-        /* --- STYLE BARU: COUNTER (JUMLAH PU BBM) --- */
-        .counter-wrapper {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-            width: 100%;
-            max-width: 200px;
-            /* Batasi lebar agar rapi */
-        }
-
-        .counter-btn {
-            background-color: #f8f9fa;
-            border: none;
-            width: 50px;
-            height: 45px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #004699;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-right: 1px solid #ddd;
-        }
-
-        .counter-btn:last-child {
-            border-right: none;
-            border-left: 1px solid #ddd;
-        }
-
-        .counter-btn:hover {
-            background-color: #e2e6ea;
-        }
-
-        .counter-btn:active {
-            background-color: #dbe2e8;
-        }
-
-        .counter-input {
-            width: 100%;
-            border: none;
-            text-align: center;
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-            outline: none;
-            appearance: textfield;
-            /* Hapus spinner firefox */
-        }
-
-        /* Hapus spinner chrome/safari */
-        .counter-input::-webkit-outer-spin-button,
-        .counter-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        /* Spinner Loading */
-        .spinner {
-            position: absolute;
-            right: 15px;
-            top: 38px;
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #004699;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* --- STYLE ACCORDION --- */
-        .accordion {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-            overflow: hidden;
-            border: 1px solid #e1e4e8;
-        }
-
-        .accordion-item {
-            border-bottom: 1px solid #e1e4e8;
-        }
-
-        .accordion-item:last-child {
-            border-bottom: none;
-        }
-
-        .accordion-header {
-            width: 100%;
-            background-color: #fff;
-            padding: 20px 25px;
-            text-align: left;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'Poppins', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .accordion-header:hover {
-            background-color: #f9fafb;
-        }
-
-        .accordion-header.active {
-            background-color: #004699;
-            color: white;
-        }
-
-        .icon {
-            font-size: 12px;
-            transition: transform 0.3s ease;
-        }
-
-        .active .icon {
-            transform: rotate(180deg);
-        }
-
-        .accordion-body {
-            padding: 0 25px;
-            background-color: white;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-
-        .form-content {
-            padding: 25px 0;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 15px;
-            background: #004699;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 30px;
-        }
-
-        .btn-submit:hover {
-            background-color: #003377;
-        }
-
-        /* Utility untuk Divider form dinamis */
-        .form-divider {
-            margin: 25px 0 15px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #eee;
-            color: #004699;
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Class untuk section yang disembunyikan/ditampilkan */
-        .hidden-section {
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* --- STYLE NOTIFIKASI SUKSES --- */
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #c3e6cb;
-            text-align: center;
-        }
     </style>
 </head>
 
@@ -359,7 +115,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="header-left">
             <img src="https://intra.kemendag.go.id/res/assets/img/logo/logo-kemendag-linktree.svg" alt="Logo Kemendag" class="logo-img">
         </div>
-        <div class="header-right" style="display:flex; align-items:center; gap:20px;">
+
+        <div class="header-center">
+            <span class="date" id="current-date">Memuat tanggal...</span>
+            <span class="time" id="current-time">00:00:00 WIB</span>
+        </div>
+
+        <div class="header-right">
             <div class="user-info">
                 <span style="display:block; font-size:12px; color:#888;">Halo, Admin</span>
                 <span class="user-name"><?= htmlspecialchars($_SESSION['username']); ?></span>
@@ -386,49 +148,95 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="accordion">
 
-                    <div class="accordion-item">
+                    <div class="accordion-item" id="item-main">
                         <button type="button" class="accordion-header active">
                             I. Data Pengawasan <span class="icon">&#9660;</span>
                         </button>
-                        <div class="accordion-body" style="max-height: 1000px;">
+                        <div class="accordion-body" style="max-height: 2000px;">
                             <div class="form-content">
 
                                 <div class="form-group">
-                                    <label>Tanggal Pengawasan</label>
+                                    <label>Tanggal Pengawasan <span class="required">*</span></label>
                                     <input type="date" name="tgl_pengawasan" class="form-control" required>
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Nomor/Identitas SPBU (Pilih dari daftar atau ketik)</label>
-
-                                    <input type="text" name="nomor_spbu" id="cari_nomor" class="form-control"
-                                        list="list-spbu" placeholder="Ketik atau pilih nomor SPBU..." autocomplete="on" required>
-
-                                    <datalist id="list-spbu">
-                                    </datalist>
-
-                                    <div class="spinner" id="loading-spinner"></div>
+                                <div class="form-group" style="background:#eef4fa; padding:15px; border-radius:8px;">
+                                    <label style="color:#004699; margin-bottom:10px; display:block; font-weight:600;">Kategori Objek Pengawasan</label>
+                                    <div style="display: flex; gap: 20px;">
+                                        <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
+                                            <input type="radio" name="kategori_objek" value="spbu" onchange="pilihKategori('spbu')" style="margin-right: 8px; accent-color: #004699;"> 
+                                            SPBU
+                                        </label>
+                                        <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
+                                            <input type="radio" name="kategori_objek" value="non_spbu" onchange="pilihKategori('non_spbu')" style="margin-right: 8px; accent-color: #004699;"> 
+                                            NON-SPBU
+                                        </label>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Alamat Lengkap (Otomatis)</label>
-                                    <textarea name="alamat_spbu" id="hasil_alamat" class="form-control" rows="2" readonly style="background-color: #f9f9f9;"></textarea>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Kota/Kabupaten (Otomatis)</label>
-                                    <input type="text" id="hasil_kota" class="form-control" readonly style="background-color: #f9f9f9;">
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Jumlah PU BBM Yang Diawasi</label>
-
-                                    <div class="counter-wrapper">
-                                        <button type="button" class="counter-btn" id="btn-minus">&minus;</button>
-                                        <input type="number" name="jumlah_nozzle" id="jumlah_input" class="counter-input" value="0" min="0">
-                                        <button type="button" class="counter-btn" id="btn-plus">&plus;</button>
+                                <div id="form-spbu" class="hidden-section">
+                                    <div class="form-divider">Data SPBU</div>
+                                    <div class="form-group">
+                                        <label>Nomor/Identitas SPBU</label>
+                                        <input type="text" name="nomor_spbu" id="cari_nomor" class="form-control"
+                                            list="list-spbu" placeholder="Ketik atau pilih nomor SPBU..." autocomplete="on">
+                                        <datalist id="list-spbu"></datalist>
+                                        <div class="spinner" id="loading-spinner"></div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label>Alamat Lengkap (Otomatis)</label>
+                                        <textarea name="alamat_spbu" id="hasil_alamat" class="form-control" rows="2" readonly style="background-color: #f9f9f9;"></textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Kota/Kabupaten (Otomatis)</label>
+                                        <input type="text" id="hasil_kota" class="form-control" readonly style="background-color: #f9f9f9;">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Jumlah PU BBM Yang Diawasi</label>
+                                        <div class="counter-wrapper">
+                                            <button type="button" class="counter-btn" id="btn-minus">&minus;</button>
+                                            <input type="number" name="jumlah_nozzle" id="jumlah_input" class="counter-input" value="0" min="0">
+                                            <button type="button" class="counter-btn" id="btn-plus">&plus;</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="form-non-spbu" class="hidden-section">
+                                    <div class="form-divider">Data NON-SPBU</div>
+                                    
+                                    <div class="form-group">
+                                        <label>Nama/Identitas Lokasi Non-SPBU</label>
+                                        <input type="text" name="identitas_non_spbu" id="cari_nomor_non" class="form-control"
+                                            list="list-non-spbu" placeholder="Ketik nama perusahaan/pasar..." autocomplete="on">
+                                        <datalist id="list-non-spbu">
+                                            <option value="PT. Maju Jaya Abadi">
+                                            <option value="Pasar Baru Metro">
+                                            <option value="Superindo Daan Mogot">
+                                        </datalist>
+                                        <div class="spinner" id="loading-spinner-non"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Alamat Lengkap (Otomatis)</label>
+                                        <textarea name="alamat_non_spbu" id="hasil_alamat_non" class="form-control" rows="2" readonly style="background-color: #f9f9f9;"></textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Kota/Kabupaten (Otomatis)</label>
+                                        <input type="text" id="hasil_kota_non" class="form-control" readonly style="background-color: #f9f9f9;">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Jumlah UTTP Yang Diawasi</label>
+                                        <div class="counter-wrapper">
+                                            <button type="button" class="counter-btn" id="btn-minus-non">&minus;</button>
+                                            <input type="number" name="jumlah_uttp_non" id="jumlah_input_non" class="counter-input" value="0" min="0">
+                                            <button type="button" class="counter-btn" id="btn-plus-non">&plus;</button>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
@@ -445,13 +253,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <script>
-        // --- 1. LOGIKA SPBU (Ambil Data API) ---
+        // --- LOGIKA JAM & TANGGAL (SAMA SEPERTI INDEX.PHP) ---
+        function updateClock() {
+            const now = new Date();
+            
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString('id-ID', dateOptions);
+            
+            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':');
+
+            const dateEl = document.getElementById('current-date');
+            const timeEl = document.getElementById('current-time');
+
+            if(dateEl) dateEl.textContent = dateString;
+            if(timeEl) timeEl.textContent = timeString + " WIB";
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+
+        // --- LOGIKA KATEGORI UTAMA (SPBU vs NON-SPBU) ---
+        // Variabel global untuk menyimpan mode aktif ('spbu' atau 'non_spbu')
+        let modeAktif = ''; 
+
+        function pilihKategori(kategori) {
+            const formSpbu = document.getElementById('form-spbu');
+            const formNonSpbu = document.getElementById('form-non-spbu');
+            const dynamicContainer = document.getElementById('dynamic-container');
+            
+            // Reset isian dynamic ketika pindah kategori
+            dynamicContainer.innerHTML = '';
+            document.getElementById('jumlah_input').value = 0;
+            document.getElementById('jumlah_input_non').value = 0;
+
+            modeAktif = kategori;
+
+            if (kategori === 'spbu') {
+                formSpbu.style.display = 'block';
+                formNonSpbu.style.display = 'none';
+            } else {
+                formSpbu.style.display = 'none';
+                formNonSpbu.style.display = 'block';
+            }
+            resizeAccordion();
+        }
+
+        function resizeAccordion() {
+            const mainItem = document.getElementById('item-main');
+            const panel = mainItem.querySelector('.accordion-body');
+            panel.style.maxHeight = panel.scrollHeight + 1000 + "px";
+        }
+
+
+        // --- 1. LOGIKA UTAMA SPBU (PENCARIAN) ---
         const inputNomor = document.getElementById('cari_nomor');
         const listSpbu = document.getElementById('list-spbu');
         const inputAlamat = document.getElementById('hasil_alamat');
         const inputKota = document.getElementById('hasil_kota');
         const spinner = document.getElementById('loading-spinner');
 
+        // Load data SPBU saat awal (Mock/Fetch)
         document.addEventListener('DOMContentLoaded', () => {
             fetch('api_spbu.php?action=list')
                 .then(response => response.json())
@@ -464,247 +325,238 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         });
                     }
                 })
-                .catch(err => console.error('Gagal memuat daftar SPBU:', err));
+                .catch(err => console.log('Info: API SPBU belum terhubung/tersedia, menggunakan mode manual.'));
         });
 
-        inputNomor.addEventListener('input', function() {
-            inputAlamat.value = "";
-            inputKota.value = "";
-            inputAlamat.setAttribute('readonly', true);
-            inputKota.setAttribute('readonly', true);
-            inputAlamat.style.backgroundColor = "#f9f9f9";
-            inputKota.style.backgroundColor = "#f9f9f9";
-            inputAlamat.style.borderColor = "#ddd";
-            inputAlamat.placeholder = "";
-        });
-
+        // Event listener SPBU
         inputNomor.addEventListener('change', function() {
             const nomor = this.value;
             if (!nomor) return;
             spinner.style.display = 'block';
 
-            fetch('api_spbu.php?nomor=' + encodeURIComponent(nomor))
-                .then(response => response.json())
-                .then(result => {
-                    spinner.style.display = 'none';
-                    if (result.status === 'success') {
-                        inputAlamat.value = result.data.alamat;
-                        inputKota.value = result.data.kota_kab;
-                        inputAlamat.style.borderColor = '#28a745';
-                    } else {
-                        inputAlamat.placeholder = "Data baru. Silakan ketik alamat manual...";
-                        inputAlamat.removeAttribute('readonly');
-                        inputKota.removeAttribute('readonly');
-                        inputAlamat.style.backgroundColor = "#fff";
-                        inputKota.style.backgroundColor = "#fff";
-                        inputAlamat.focus();
-                    }
-                })
-                .catch(err => {
-                    spinner.style.display = 'none';
-                    console.error('Error ambil detail:', err);
-                });
+            // Simulasi fetch (ganti dengan fetch asli jika ada)
+            // Di sini kita pakai logika dummy agar terlihat bekerja
+            setTimeout(() => {
+                spinner.style.display = 'none';
+                // Simulasi data ditemukan
+                if (nomor.includes("34")) { 
+                    inputAlamat.value = "Jl. Raya Bogor KM 30 (Data API)";
+                    inputKota.value = "Jakarta Timur";
+                    inputAlamat.style.borderColor = '#28a745';
+                } else {
+                    // Jika tidak ditemukan, buka mode manual
+                    inputAlamat.placeholder = "Data baru. Silakan ketik alamat manual...";
+                    inputAlamat.removeAttribute('readonly');
+                    inputKota.removeAttribute('readonly');
+                    inputAlamat.style.backgroundColor = "#fff";
+                    inputKota.style.backgroundColor = "#fff";
+                    inputAlamat.focus();
+                }
+            }, 500);
         });
 
-        // --- 2. LOGIKA COUNTER & DYNAMIC FORM ---
-        const inputJumlah = document.getElementById('jumlah_input');
-        const container = document.getElementById('dynamic-container');
-        const btnPlus = document.getElementById('btn-plus');
-        const btnMinus = document.getElementById('btn-minus');
 
-        function triggerInputEvent() {
-            const event = new Event('input', {
-                bubbles: true
+        // --- 2. LOGIKA UTAMA NON-SPBU (PENCARIAN - SAMA SEPERTI SPBU) ---
+        const inputNomorNon = document.getElementById('cari_nomor_non');
+        const inputAlamatNon = document.getElementById('hasil_alamat_non');
+        const inputKotaNon = document.getElementById('hasil_kota_non');
+        const spinnerNon = document.getElementById('loading-spinner-non');
+
+        // Data Dummy untuk Non-SPBU (Bisa diganti fetch API)
+        const dbNonSpbu = {
+            "PT. Maju Jaya Abadi": { alamat: "Jl. Industri Raya No. 12", kota: "Jakarta Timur" },
+            "Pasar Baru Metro": { alamat: "Jl. KH Samanhudi", kota: "Jakarta Pusat" }
+        };
+
+        inputNomorNon.addEventListener('change', function() {
+            const nama = this.value;
+            if (!nama) return;
+            
+            // Reset field
+            inputAlamatNon.value = ""; inputKotaNon.value = "";
+            inputAlamatNon.setAttribute('readonly', true);
+            inputKotaNon.setAttribute('readonly', true);
+            
+            spinnerNon.style.display = 'block';
+
+            setTimeout(() => {
+                spinnerNon.style.display = 'none';
+                if (dbNonSpbu[nama]) {
+                    inputAlamatNon.value = dbNonSpbu[nama].alamat;
+                    inputKotaNon.value = dbNonSpbu[nama].kota;
+                    inputAlamatNon.style.borderColor = '#28a745';
+                } else {
+                    // Mode manual jika tidak ada di database
+                    inputAlamatNon.placeholder = "Lokasi baru. Ketik alamat manual...";
+                    inputAlamatNon.removeAttribute('readonly');
+                    inputKotaNon.removeAttribute('readonly');
+                    inputAlamatNon.style.backgroundColor = "#fff";
+                    inputKotaNon.style.backgroundColor = "#fff";
+                    inputAlamatNon.focus();
+                }
+            }, 500);
+        });
+
+
+        // --- 3. LOGIKA GENERATE FORM (SHARED LOGIC) ---
+        // Kita buat fungsi reusable untuk generate item accordion
+        const container = document.getElementById('dynamic-container');
+
+        // Setup Listener untuk SPBU
+        setupCounterListeners('jumlah_input', 'btn-plus', 'btn-minus', 'PU BBM');
+        // Setup Listener untuk NON-SPBU
+        setupCounterListeners('jumlah_input_non', 'btn-plus-non', 'btn-minus-non', 'UTTP');
+
+        function setupCounterListeners(inputId, plusId, minusId, labelItem) {
+            const input = document.getElementById(inputId);
+            const btnPlus = document.getElementById(plusId);
+            const btnMinus = document.getElementById(minusId);
+
+            btnPlus.addEventListener('click', function() {
+                let val = parseInt(input.value) || 0;
+                input.value = val + 1;
+                triggerGenerate(input, labelItem);
             });
-            inputJumlah.dispatchEvent(event);
+
+            btnMinus.addEventListener('click', function() {
+                let val = parseInt(input.value) || 0;
+                if (val > 0) {
+                    input.value = val - 1;
+                    triggerGenerate(input, labelItem);
+                }
+            });
+
+            input.addEventListener('input', function() {
+                triggerGenerate(input, labelItem);
+            });
         }
 
-        btnPlus.addEventListener('click', function() {
-            let val = parseInt(inputJumlah.value) || 0;
-            inputJumlah.value = val + 1;
-            triggerInputEvent();
-        });
+        function triggerGenerate(inputEl, labelItem) {
+            let targetCount = parseInt(inputEl.value);
+            if (isNaN(targetCount) || targetCount < 0) targetCount = 0;
+            
+            const existingItems = container.children.length;
 
-        btnMinus.addEventListener('click', function() {
-            let val = parseInt(inputJumlah.value) || 0;
-            if (val > 0) {
-                inputJumlah.value = val - 1;
-                triggerInputEvent();
+            if (targetCount > existingItems) {
+                // Tambah Item
+                for (let i = existingItems + 1; i <= targetCount; i++) {
+                    addAccordionItem(i, labelItem);
+                }
+                initAccordion(); // Re-init click listener
+            } else if (targetCount < existingItems) {
+                // Kurang Item
+                while (container.children.length > targetCount) { 
+                    container.removeChild(container.lastElementChild); 
+                }
             }
-        });
+        }
 
-        // --- FUNGSI TOGGLE FORM (LOGIKA PILIHAN) ---
+        function addAccordionItem(index, labelType) {
+            // Label Type bisa "PU BBM" atau "UTTP" tergantung asal form
+            const htmlTemplate = `
+            <div class="accordion-item" id="item-${index}">
+                <button type="button" class="accordion-header">
+                    Data ${labelType} #${index} <span class="icon">&#9660;</span>
+                </button>
+                <div class="accordion-body">
+                    <div class="form-content">
+                        <h4 style="margin-bottom:15px; color:#004699; font-size:14px; font-weight:600;">Pengawasan ${labelType} No. ${index}</h4>
+                        
+                        <div class="form-group">
+                            <label>Jenis / Nama UTTP</label>
+                            <input type="text" name="detail[${index}][jenis]" class="form-control" placeholder="Contoh: Timbangan Elektronik / Nozzle Pertamax">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Merek</label>
+                            <input type="text" name="detail[${index}][merek]" class="form-control" placeholder="Contoh: Tatsuno / Toledo">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipe / Model</label>
+                            <input type="text" name="detail[${index}][tipe]" class="form-control">
+                        </div>
+
+                        <div class="form-group" style="background:#eef4fa; padding:15px; border-radius:8px;">
+                            <label style="color:#004699; margin-bottom:10px; display:block; font-weight:600;">Jenis Kegiatan</label>
+                            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                                <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
+                                    <input type="radio" name="detail[${index}][jenis_kegiatan]" value="tera" onchange="toggleSection(${index}, 'tera')" style="transform: scale(1.2); margin-right: 8px; accent-color: #004699;"> Pemeriksaan Tanda Tera
+                                </label>
+                                <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
+                                    <input type="radio" name="detail[${index}][jenis_kegiatan]" value="uji" onchange="toggleSection(${index}, 'uji')" style="transform: scale(1.2); margin-right: 8px; accent-color: #004699;"> Pengujian Kebenaran
+                                </label>
+                                <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
+                                    <input type="radio" name="detail[${index}][jenis_kegiatan]" value="gabungan" onchange="toggleSection(${index}, 'gabungan')" style="transform: scale(1.2); margin-right: 8px; accent-color: #004699;"> Pemeriksaan & Pengujian
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="section-tera-${index}" class="hidden-section">
+                            <div class="form-divider">Hasil Pemeriksaan Tanda Tera</div>
+                            <div class="form-group">
+                                <label>Status Tanda Tera</label>
+                                <select name="detail[${index}][tanda_tera]" class="form-control">
+                                    <option value="">Pilih Status</option>
+                                    <option value="Memenuhi">Memenuhi</option>
+                                    <option value="Tidak Memenuhi">Tidak Memenuhi</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="section-uji-${index}" class="hidden-section">
+                            <div class="form-divider">Hasil Pengujian Kebenaran</div>
+                            <div class="form-group">
+                                <label>Keterangan Teknis (Opsional)</label>
+                                <select name="detail[${index}][kecepatan]" class="form-control">
+                                    <option value="">-</option>
+                                    <option value="Lambat">Lambat (Khusus PU BBM)</option>
+                                    <option value="Sedang">Sedang (Khusus PU BBM)</option>
+                                    <option value="Cepat">Cepat (Khusus PU BBM)</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Kesalahan (%)</label><input type="number" step="0.01" name="detail[${index}][kesalahan]" class="form-control"></div>
+                            <div class="form-group"><label>Ketidaktepatan (%)</label><input type="number" step="0.01" name="detail[${index}][ketidaktepatan]" class="form-control"></div>
+                            <div class="form-group" style="margin-top:25px;"><label>Kesimpulan</label><input type="text" name="detail[${index}][kesimpulan]" class="form-control" style="border-color:#004699; font-weight:500;" placeholder="Sah / Batal"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            container.insertAdjacentHTML('beforeend', htmlTemplate);
+        }
+
+        // --- GLOBAL FUNCTION UTILITY ---
         function toggleSection(index, value) {
             const sectionTera = document.getElementById(`section-tera-${index}`);
             const sectionUji = document.getElementById(`section-uji-${index}`);
-
-            // Sembunyikan semua dulu sebagai default
             sectionTera.style.display = 'none';
             sectionUji.style.display = 'none';
 
-            // Logika tampilan berdasarkan pilihan
-            if (value === 'tera') {
-                sectionTera.style.display = 'block';
-            } else if (value === 'uji') {
-                sectionUji.style.display = 'block';
-            } else if (value === 'gabungan') {
-                // Tampilkan KEDUANYA
-                sectionTera.style.display = 'block';
-                sectionUji.style.display = 'block';
-            }
+            if (value === 'tera') sectionTera.style.display = 'block';
+            else if (value === 'uji') sectionUji.style.display = 'block';
+            else if (value === 'gabungan') { sectionTera.style.display = 'block'; sectionUji.style.display = 'block'; }
 
-            // Update tinggi accordion (agar konten tidak terpotong saat form muncul)
             const item = document.getElementById(`item-${index}`);
-            // Cek element accordion-body untuk menyesuaikan scrollHeight
             if (item) {
                 const panel = item.querySelector('.accordion-body');
-                if (panel.style.maxHeight) {
-                    panel.style.maxHeight = panel.scrollHeight + 1000 + "px"; // Tambah buffer tinggi
-                }
+                panel.style.maxHeight = panel.scrollHeight + 1000 + "px";
             }
         }
 
-
-        // Logika Utama: Saat Angka Berubah
-        inputJumlah.addEventListener('input', function() {
-            let targetCount = parseInt(this.value);
-            if (isNaN(targetCount) || targetCount < 0) targetCount = 0;
-
-            const existingItems = container.children.length;
-
-            // Jika User Menambah
-            if (targetCount > existingItems) {
-                for (let i = existingItems + 1; i <= targetCount; i++) {
-
-                    const htmlTemplate = `
-                    <div class="accordion-item" id="item-${i}">
-                        <button type="button" class="accordion-header">
-                            Data PU BBM #${i} <span class="icon">&#9660;</span>
-                        </button>
-                        <div class="accordion-body">
-                            <div class="form-content">
-                                
-                                <h4 style="margin-bottom:15px; color:#004699; font-size:14px; font-weight:600;">Pengawasan PU BBM No. ${i}</h4>
-
-                                <div class="form-group">
-                                    <label>Merek</label>
-                                    <input type="text" name="detail[${i}][merek]" class="form-control" placeholder="Contoh: Tatsuno">
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Tipe / Model</label>
-                                    <input type="text" name="detail[${i}][tipe]" class="form-control">
-                                </div>
-                                
-
-<div class="form-group" style="background:#eef4fa; padding:15px; border-radius:8px;">
-    <label style="color:#004699; margin-bottom:10px; display:block; font-weight:600;">Jenis Kegiatan</label>
-    
-    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-        <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
-            <input type="radio" name="detail[${i}][jenis_kegiatan]" value="tera" 
-                   onchange="toggleSection(${i}, 'tera')" 
-                   style="transform: scale(1.2); margin-right: 8px; accent-color: #004699;"> 
-            Pemeriksaan Tanda Tera
-        </label>
-
-        <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
-            <input type="radio" name="detail[${i}][jenis_kegiatan]" value="uji" 
-                   onchange="toggleSection(${i}, 'uji')" 
-                   style="transform: scale(1.2); margin-right: 8px; accent-color: #004699;"> 
-            Pengujian Kebenaran
-        </label>
-
-        <label style="cursor:pointer; display:flex; align-items:center; font-size:14px;">
-            <input type="radio" name="detail[${i}][jenis_kegiatan]" value="gabungan" 
-                   onchange="toggleSection(${i}, 'gabungan')" 
-                   style="transform: scale(1.2); margin-right: 8px; accent-color: #004699;"> 
-            Pemeriksaan & Pengujian
-        </label>
-    </div>
-</div>
-
-
-                                <div id="section-tera-${i}" class="hidden-section">
-                                    <div class="form-divider">Hasil Pemeriksaan Tanda Tera</div>
-                                    <div class="form-group">
-                                        <label>Status Tanda Tera</label>
-                                        <select name="detail[${i}][tanda_tera]" class="form-control">
-                                            <option value="">Pilih Status</option>
-                                            <option value="Memenuhi">Memenuhi</option>
-                                            <option value="Tidak Memenuhi">Tidak Memenuhi</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div id="section-uji-${i}" class="hidden-section">
-                                    <div class="form-divider">Hasil Pengujian Kebenaran</div>
-
-                                    <div class="form-group">
-                                        <label>Kecepatan</label>
-                                        <select name="detail[${i}][kecepatan]" class="form-control">
-                                            <option value="">Pilih Kecepatan</option>
-                                            <option value="Lambat">Lambat</option>
-                                            <option value="Sedang">Sedang</option>
-                                            <option value="Cepat">Cepat</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Kesalahan (%)</label>
-                                        <input type="number" step="0.01" name="detail[${i}][kesalahan]" class="form-control" placeholder="Contoh: -0.2">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Ketidaktepatan (%)</label>
-                                        <input type="number" step="0.01" name="detail[${i}][ketidaktepatan]" class="form-control" placeholder="Contoh: 0.05">
-                                    </div>
-
-                                    <div class="form-group" style="margin-top:25px;">
-                                        <label>Kesimpulan</label>
-                                        <input type="text" name="detail[${i}][kesimpulan]" class="form-control" placeholder=" " style="border-color:#004699; font-weight:500;">
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', htmlTemplate);
-                }
-                initAccordion();
-            }
-
-            // Jika User Mengurangi
-            else if (targetCount < existingItems) {
-                while (container.children.length > targetCount) {
-                    container.removeChild(container.lastElementChild);
-                }
-            }
-        });
-
-
-        // --- 3. LOGIKA ACCORDION (Global & Re-usable) ---
         function initAccordion() {
             const acc = document.getElementsByClassName("accordion-header");
             for (let i = 0; i < acc.length; i++) {
+                if(acc[i].getAttribute('data-bound') === 'true') continue;
+                acc[i].setAttribute('data-bound', 'true');
                 acc[i].onclick = function() {
                     this.classList.toggle("active");
                     const panel = this.nextElementSibling;
-                    if (panel.style.maxHeight) {
-                        panel.style.maxHeight = null;
-                    } else {
-                        // Set max height cukup besar untuk menampung konten dinamis
-                        panel.style.maxHeight = panel.scrollHeight + 1000 + "px";
-                    }
+                    if (panel.style.maxHeight) panel.style.maxHeight = null;
+                    else panel.style.maxHeight = panel.scrollHeight + 1000 + "px";
                 };
             }
         }
-
-        // Jalankan sekali saat halaman pertama dimuat
         initAccordion();
+
     </script>
-
 </body>
-
 </html>
